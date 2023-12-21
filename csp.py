@@ -340,7 +340,7 @@ def AC4(csp, queue=None, removals=None, arc_heuristic=dom_j_up):
 # ______________________________________________________________________________
 # CSP Backtracking Search
 
-# Variable ordering
+# Variable ordering   
 
 
 def first_unassigned_variable(assignment, csp):
