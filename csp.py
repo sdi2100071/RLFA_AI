@@ -79,7 +79,7 @@ class CSP(search.Problem):
 
         # Subclasses may implement this more efficiently
         def conflict(var2):
-            return var2 in assignment and not self.constraints(var, val, var2, assignment[var2])
+            return var2 in assignment and not self.constraints(var, val, var2, assignment[var2],self.neighbors, self.cons)
 
         return count(conflict(v) for v in self.neighbors[var])
 
@@ -387,7 +387,7 @@ def forward_checking(csp, var, value, assignment, removals):
     for B in csp.neighbors[var]:
         if B not in assignment:
             for b in csp.curr_domains[B][:]:
-                if not csp.constraints(var, value, B, b):
+                if not csp.constraints(var, value, B, b, csp.neighbors, csp.cons ):
                     csp.prune(B, b, removals)
             if not csp.curr_domains[B]:
                 return False
