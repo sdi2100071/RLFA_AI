@@ -1,7 +1,21 @@
 import csp
+import rlfa
 import csv
 import operator
 
+def constraints(A, a, B, b, neighbors, cons):
+
+        ops = { "=": operator.eq, ">": operator.gt } 
+        
+        ind = neighbors[A].index(B)
+        cond = cons[A][ind]    
+        sub = abs(a - b)
+        res = int(cond[1])
+
+        if ops[cond[0]](sub, res):
+            return True
+        else:
+            return False 
 
 if __name__ == "__main__":
     
@@ -72,40 +86,7 @@ if __name__ == "__main__":
     
     # print(neighbors)
     #----------------------------------------------------------------------------------
-
-    class rlfa(csp.CSP):
-        
-        def __init__(self,variables, domains, neighbors, constraints, cons):
-            
-            self.variables = variables
-            self.domains = domains
-            self.neighbors = neighbors
-            self.constraints = constraints
-            self.cons = cons
-       
-            csp.CSP.__init__(self, variables, domains, neighbors, constraints)
-            
-        def constraints(A, a, B, b, neighbors, cons):
-
-            ops = { "=": operator.eq, ">": operator.gt } 
-            
-            ind = neighbors[A].index(B)
-            cond = cons[A][ind]    
-            sub = abs(a - b)
-            res = int(cond[1])
-
-            if ops[cond[0]](sub, res):
-                return True
-            else:
-                return False       
-
     
-    b = rlfa.constraints(2, 1, 1 , 86, neighbors, cons)
-    # print(b)
-    
-    x = rlfa(variables, domains, neighbors, rlfa.constraints, cons)
-    print(csp.backtracking_search(x, select_unassigned_variable=csp.mrv, inference=csp.forward_checking))
-    
-            
-        
+    # x = rlfa.rlfa(variables, domains, neighbors,constraints, cons)
+    # print(csp.backtracking_search(x, select_unassigned_variable=csp.mrv, inference=csp.forward_checking))
     
