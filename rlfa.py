@@ -38,9 +38,10 @@ class rlfa(csp.CSP):
         min = sys.maxsize
         minv = 0
         
+        if csp.curr_domains is None:
+            return first_unassigned_variable(assignment, csp)
+        
         for var in csp.variables:
-            if csp.curr_domains is None:
-                return first_unassigned_variable(assignment, csp)
             
             domSize = len(csp.curr_domains[var])  
             # print domSize
