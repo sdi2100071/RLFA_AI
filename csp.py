@@ -376,10 +376,8 @@ def lcv(var, assignment, csp):
 
 # Inference
 
-
 def no_inference(csp, var, value, assignment, removals):
     return True
-
 
 def forward_checking(csp, var, value, assignment, removals):
     """Prune neighbor values inconsistent with var=value."""

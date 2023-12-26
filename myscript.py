@@ -84,9 +84,20 @@ if __name__ == "__main__":
     neighbors = {int(key):[int(i) for i in val]
        for key, val in neighbors.items()}
     
+    
+    
+    #counter  dictionary
+    weight = {}
+    
+    for var in variables:
+        for n in neighbors[var]:
+            weight[(var, n)] = 1
+    
+    # print(not neighbors)
     # print(neighbors)
     #----------------------------------------------------------------------------------
     
-    # x = rlfa.rlfa(variables, domains, neighbors,constraints, cons)
-    # print(csp.backtracking_search(x, select_unassigned_variable=csp.mrv, inference=csp.forward_checking))
+    x = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight)
+    result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    # print (max(weight.values()))
     
