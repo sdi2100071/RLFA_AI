@@ -8,6 +8,7 @@ from collections import defaultdict, Counter
 from functools import reduce
 from operator import eq, neg
 
+
 from sortedcontainers import SortedSet
 
 import search

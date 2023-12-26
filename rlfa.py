@@ -1,5 +1,6 @@
 import csp
 import sys
+from csp import *
 from utils import argmin_random_tie, count, first, extend
 
 class rlfa(csp.CSP):
@@ -39,7 +40,7 @@ class rlfa(csp.CSP):
         
         for var in csp.variables:
             if csp.curr_domains is None:
-                return 0
+                return first_unassigned_variable(assignment, csp)
             
             domSize = len(csp.curr_domains[var])  
             # print domSize
