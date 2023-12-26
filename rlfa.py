@@ -1,5 +1,5 @@
 import csp
-
+import sys
 from utils import argmin_random_tie, count, first, extend
 
 class rlfa(csp.CSP):
@@ -26,22 +26,35 @@ class rlfa(csp.CSP):
                         csp.prune(B, b, removals)
                 if not csp.curr_domains[B]:
                     csp.weight[(var, B)] += 1 #allagh
+                    csp.weight[(B, var)] += 1 #allagh
                     return False
         # print(weight)
         return True
               
     def dom_wdeg(assignment, csp):
+        
         wdeg = {key : 1 for key in csp.variables }
+        min = sys.maxsize
+        minv = 0
+        
         for var in csp.variables:
+            if csp.curr_domains is None:
+                return 0
+            
+            domSize = len(csp.curr_domains[var])  
+            # print domSize
             if var not in assignment:
                 for n in csp.neighbors[var]:
                     if n not in assignment:
                         wdeg[var] += csp.weight[(var, n)]
-        
-        return min(wdeg.values())
-                
-                
-        
-        
-        
-    #     return 
+                        
+            eval = domSize/wdeg[var]
+            # print(eval)
+            if eval <= min:
+                min = eval
+                minv = var
+            
+        # print(wdeg)
+        # print(minv) 
+        return minv
+         
