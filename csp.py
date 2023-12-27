@@ -197,7 +197,7 @@ def revise(csp, Xi, Xj, removals, checks=0):
         # if all(not csp.constraints(Xi, x, Xj, y) for y in csp.curr_domains[Xj]):
         conflict = True
         for y in csp.curr_domains[Xj]:
-            if csp.constraints(Xi, x, Xj, y):
+            if csp.constraints(Xi, x, Xj, y, csp.neighbors, csp.cons):
                 conflict = False
             checks += 1
             if not conflict:
@@ -393,7 +393,7 @@ def forward_checking(csp, var, value, assignment, removals):
     return True
 
 
-def mac(csp, var, value, assignment, removals, constraint_propagation=AC3b):
+def mac(csp, var, value, assignment, removals, constraint_propagation=AC3):
     """Maintain arc consistency."""
     return constraint_propagation(csp, {(X, var) for X in csp.neighbors[var]}, removals)
 

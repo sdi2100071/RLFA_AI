@@ -92,11 +92,11 @@ if __name__ == "__main__":
         for n in neighbors[var]:
             weight[(var, n)] = 1
     
-    # print(not neighbors)
-    # print(neighbors)
     #----------------------------------------------------------------------------------
     
     x = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight)
-    result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    # result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
+
     print (result)
     
