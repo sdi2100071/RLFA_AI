@@ -98,5 +98,5 @@ if __name__ == "__main__":
     
     x = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight)
     result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
-    # print (max(weight.values()))
+    print (result)
     

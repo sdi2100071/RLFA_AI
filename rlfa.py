@@ -51,11 +51,11 @@ class rlfa(csp.CSP):
                     if n not in assignment:
                         wdeg += csp.weight[(var, n)]
             
-            # print (wdeg)
-            eval = domSize/wdeg
-            if eval <= min:
-                min = eval
-                minv = var
+                # print (wdeg)
+                eval = domSize/wdeg
+                if eval <= min:
+                    min = eval
+                    minv = var
                 
         return minv
          
