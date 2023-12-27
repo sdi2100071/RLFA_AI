@@ -6,7 +6,6 @@ import operator
 def constraints(A, a, B, b, neighbors, cons):
 
         ops = { "=": operator.eq, ">": operator.gt } 
-        
         ind = neighbors[A].index(B)
         cond = cons[A][ind]    
         sub = abs(a - b)

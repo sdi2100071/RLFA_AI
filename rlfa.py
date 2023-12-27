@@ -29,34 +29,33 @@ class rlfa(csp.CSP):
                     csp.weight[(var, B)] += 1 #allagh
                     csp.weight[(B, var)] += 1 #allagh
                     return False
-        # print(weight)
+                if( len(csp.curr_domains[B]) == 0 ):
+                    csp.weight[(var, B)] += 1 #allagh
+                    csp.weight[(B, var)] += 1 #allagh
+                    
         return True
               
     def dom_wdeg(assignment, csp):
         
-        wdeg = {key : 1 for key in csp.variables }
+        # wdeg = {key : 1 for key in csp.variables } 
         min = sys.maxsize
         minv = 0
-        
         if csp.curr_domains is None:
             return first_unassigned_variable(assignment, csp)
         
         for var in csp.variables:
-            
+            wdeg = 1          
             domSize = len(csp.curr_domains[var])  
-            # print domSize
             if var not in assignment:
                 for n in csp.neighbors[var]:
                     if n not in assignment:
-                        wdeg[var] += csp.weight[(var, n)]
-                        
-            eval = domSize/wdeg[var]
-            # print(eval)
+                        wdeg += csp.weight[(var, n)]
+            
+            # print (wdeg)
+            eval = domSize/wdeg
             if eval <= min:
                 min = eval
                 minv = var
-            
-        # print(wdeg)
-        # print(minv) 
+                
         return minv
          
