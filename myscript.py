@@ -87,6 +87,7 @@ if __name__ == "__main__":
     
     #counter  dictionary
     weight = {}
+    confSet = {key: set() for key in variables}
     
     for var in variables:
         for n in neighbors[var]:
@@ -94,9 +95,14 @@ if __name__ == "__main__":
     
     #----------------------------------------------------------------------------------
     
-    x = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight)
+    x = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight, confSet)
     # result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
-    result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
+    # result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
 
-    print (result)
+    result1 = rlfa.cbj_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+
+    # print(list(confSet)[-2])
+
+    
+    # print (csp.ass)
     

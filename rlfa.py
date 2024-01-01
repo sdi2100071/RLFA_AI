@@ -1,11 +1,11 @@
 import csp
 import sys
 from csp import *
-from utils import argmin_random_tie, count, first, extend
+# from utils import argmin_random_tie, count, first, extend
 
 class rlfa(csp.CSP):
         
-    def __init__(self,variables, domains, neighbors,constraints, cons, weight):
+    def __init__(self,variables, domains, neighbors,constraints, cons, weight, confSet):
         
         self.variables = variables
         self.domains = domains
@@ -13,6 +13,7 @@ class rlfa(csp.CSP):
         self.constraints = constraints
         self.cons = cons
         self.weight = weight
+        self.confSet = confSet
     
         csp.CSP.__init__(self, variables, domains, neighbors, constraints)
     
@@ -41,12 +42,14 @@ class rlfa(csp.CSP):
         return minv
     
     def forward_checking(csp, var, value, assignment, removals):
-        """Prune neighbor values inconsistent with var=value."""
+        """Prune neighbor values inconsistent with var=value.""" 
         csp.support_pruning()
         for B in csp.neighbors[var]:
             if B not in assignment:
                 for b in csp.curr_domains[B][:]:
                     if not csp.constraints(var, value, B, b, csp.neighbors, csp.cons):
+                        #add B in conf set of var
+                        csp.confSet[var].add(B)
                         csp.prune(B, b, removals)
                 
                 if not csp.curr_domains[B]:
@@ -85,21 +88,30 @@ class rlfa(csp.CSP):
         return constraint_propagation(csp, {(X, var) for X in csp.neighbors[var]}, removals)
                 
             
-def Fc_Cbj(csp, select_unassigned_variable=first_unassigned_variable,
+def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
                         order_domain_values=unordered_domain_values, inference=no_inference):
-
+    
     def Cbj(assignment):
+        
         if len(assignment) == len(csp.variables):
             return assignment
+        
         var = select_unassigned_variable(assignment, csp)
         for value in order_domain_values(var, assignment, csp):
             if 0 == csp.nconflicts(var, value, assignment):
-                csp.assign(var, value, assignment)
+                csp.assign(var, value, assignment)          
                 removals = csp.suppose(var, value)
                 if inference(csp, var, value, assignment, removals):
                     result = Cbj(assignment)
                     if result is not None:
                         return result
+                
+                for i in range(1, len(assignment)):
+                    if list(assignment)[-i] in csp.confSet[var]:
+                        recent = list(assignment)[-i]
+                        # csp.confSet[recent].add(csp.confSet[var])
+                        csp.confSet[recent] = csp.confSet[recent] - {var}
+                        
                 csp.restore(removals)
         csp.unassign(var, assignment)
         return None
@@ -107,5 +119,7 @@ def Fc_Cbj(csp, select_unassigned_variable=first_unassigned_variable,
     result = Cbj({})
     assert result is None or csp.goal_test(result)
     return result
+
+
 
 
