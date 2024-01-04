@@ -20,7 +20,7 @@ if __name__ == "__main__":
     
 #file import 
 
-    path = "C:\\Users\\mikae\\OneDrive\\Υπολογιστής\\5th_semmester\\AI\\RLFA_AI\\rlfap\\dom2-f24.txt"
+    path = "rlfap\\dom2-f24.txt"
     with open(path, 'r') as dom:
         lines = dom.readlines()
     
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     
     domvars = domains
     
-    path = "C:\\Users\\mikae\\OneDrive\\Υπολογιστής\\5th_semmester\\AI\\RLFA_AI\\rlfap\\var2-f24.txt"
+    path = "rlfap\\var2-f24.txt"
     with open(path, 'r') as var:
         lines = var.readlines()
     
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     variables  = list(map(int, variables)) 
         
-    path = "C:\\Users\\mikae\\OneDrive\\Υπολογιστής\\5th_semmester\\AI\\RLFA_AI\\rlfap\\ctr2-f24.txt"
+    path = "rlfap\\ctr2-f24.txt"
     with open(path, 'r') as cons:
         lines = cons.readlines()
         
@@ -102,16 +102,16 @@ if __name__ == "__main__":
     rlfap = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight, confSet)
     
     "FC"
-    # result1 = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    fc = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
     
     "MAC"
-    # result2 = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
+    mac = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
 
     "FC - CBJ"
     # result1 = rlfa.rlfa.cbj_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
 
-    # print(result1)
-    # print(result2)
+    print(fc)
+    # print(mac)
     
     
     # print(list(set1)[-1])
