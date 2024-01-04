@@ -83,8 +83,6 @@ if __name__ == "__main__":
     neighbors = {int(key):[int(i) for i in val]
        for key, val in neighbors.items()}
     
-    
-    
     #counter  dictionary
     weight = {}
     confSet = {key: set() for key in variables}
@@ -95,14 +93,27 @@ if __name__ == "__main__":
     
     #----------------------------------------------------------------------------------
     
-    x = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight, confSet)
-    # result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
-    # result = csp.backtracking_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
-
-    result1 = rlfa.cbj_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
-
-    # print(list(confSet)[-2])
-
     
+    
+    
+    
+    
+    
+    rlfap = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight, confSet)
+    
+    "FC"
+    # result1 = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    
+    "MAC"
+    # result2 = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
+
+    "FC - CBJ"
+    # result1 = rlfa.rlfa.cbj_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+
+    # print(result1)
+    # print(result2)
+    
+    
+    # print(list(set1)[-1])
     # print (csp.ass)
     

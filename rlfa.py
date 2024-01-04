@@ -17,6 +17,11 @@ class rlfa(csp.CSP):
     
         csp.CSP.__init__(self, variables, domains, neighbors, constraints)
     
+    # def restore_sets(csp):
+    #     """Undo a supposition and all inferences from it."""
+    #     csp.confSet = { key : set() for key in csp.variables }
+    
+    
     def dom_wdeg(assignment, csp):
         
         # wdeg = {key : 1 for key in csp.variables } 
@@ -41,6 +46,8 @@ class rlfa(csp.CSP):
                 
         return minv
     
+    
+    
     def forward_checking(csp, var, value, assignment, removals):
         """Prune neighbor values inconsistent with var=value.""" 
         csp.support_pruning()
@@ -48,8 +55,8 @@ class rlfa(csp.CSP):
             if B not in assignment:
                 for b in csp.curr_domains[B][:]:
                     if not csp.constraints(var, value, B, b, csp.neighbors, csp.cons):
-                        #add B in conf set of var
-                        csp.confSet[var].add(B)
+                        #add B in conf set of varvc
+                        # csp.confSet[B].add(var)
                         csp.prune(B, b, removals)
                 
                 if not csp.curr_domains[B]:
@@ -62,6 +69,8 @@ class rlfa(csp.CSP):
                     csp.weight[(B, var)] += 1 #allagh
                     
         return True
+    
+    
     
     def AC3(csp, queue=None, removals=None, arc_heuristic=dom_j_up):
         """[Figure 6.3]"""
@@ -83,42 +92,45 @@ class rlfa(csp.CSP):
                         queue.add((Xk, Xi))
         return True  # CSP is satisfiable
     
+    
+    
     def mac(csp, var, value, assignment, removals, constraint_propagation=AC3):
         """Maintain arc consistency."""
         return constraint_propagation(csp, {(X, var) for X in csp.neighbors[var]}, removals)
+      
                 
             
-def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
-                        order_domain_values=unordered_domain_values, inference=no_inference):
-    
-    def Cbj(assignment):
+    def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
+                            order_domain_values=unordered_domain_values, inference=no_inference):
         
-        if len(assignment) == len(csp.variables):
-            return assignment
-        
-        var = select_unassigned_variable(assignment, csp)
-        for value in order_domain_values(var, assignment, csp):
-            if 0 == csp.nconflicts(var, value, assignment):
-                csp.assign(var, value, assignment)          
-                removals = csp.suppose(var, value)
-                if inference(csp, var, value, assignment, removals):
-                    result = Cbj(assignment)
-                    if result is not None:
-                        return result
-                
-                for i in range(1, len(assignment)):
-                    if list(assignment)[-i] in csp.confSet[var]:
-                        recent = list(assignment)[-i]
-                        # csp.confSet[recent].add(csp.confSet[var])
-                        csp.confSet[recent] = csp.confSet[recent] - {var}
-                        
-                csp.restore(removals)
-        csp.unassign(var, assignment)
-        return None
+        def Cbj(assignment):
+            
+            if len(assignment) == len(csp.variables):
+                return assignment
+            
+            var = select_unassigned_variable(assignment, csp)
+            for value in order_domain_values(var, assignment, csp):
+                if 0 == csp.nconflicts(var, value, assignment):
+                    csp.assign(var, value, assignment)          
+                    removals = csp.suppose(var, value)
+                    if inference(csp, var, value, assignment, removals):
+                        result = Cbj(assignment)
+                        if result is not None:
+                            return result
+                        else:
+                            prevVar = var
+                            if csp.confSet[var] :
+                                nextVar = list(csp.confSet[var])[-1]                    
+                                csp.confSet = { key : csp.confSet[key] - {nextVar} for key in csp.variables }                        
+                                csp.confSet[nextVar] = csp.confSet[nextVar].union(csp.confSet[prevVar])
 
-    result = Cbj({})
-    assert result is None or csp.goal_test(result)
-    return result
+                    csp.restore(removals)
+            csp.unassign(var, assignment)
+            return None
+
+        result = Cbj({})
+        assert result is None or csp.goal_test(result)
+        return result
 
 
 
