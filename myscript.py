@@ -84,34 +84,30 @@ if __name__ == "__main__":
        for key, val in neighbors.items()}
     
     #counter  dictionary
-    weight = {}
-    confSet = {key: set() for key in variables}
+    # weight = {}
+    # confSet = {key: set() for key in variables}
     
-    for var in variables:
-        for n in neighbors[var]:
-            weight[(var, n)] = 1
+    # for var in variables:
+    #     for n in neighbors[var]:
+    #         weight[(var, n)] = 1
     
     #----------------------------------------------------------------------------------
     
+
     
-    
-    
-    
-    
-    
-    rlfap = rlfa.rlfa(variables, domains, neighbors,constraints, cons, weight, confSet)
+    rlfap = rlfa.rlfa(variables, domains, neighbors,constraints, cons)
     
     "FC"
-    fc = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    # fc = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    # print(fc)
     
     "MAC"
-    mac = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
+    # mac = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
+    # print(mac)
 
     "FC - CBJ"
-    # result1 = rlfa.rlfa.cbj_search(x, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
-
-    print(fc)
-    # print(mac)
+    fc_cbj = rlfa.rlfa.cbj_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
+    print(fc_cbj)
     
     
     # print(list(set1)[-1])
