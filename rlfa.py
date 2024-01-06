@@ -16,7 +16,7 @@ class rlfa(csp.CSP):
         self.confSet = {key: set() for key in self.variables}
         self.pastFc = {key: set() for key in self.variables}
         self.ngSet = set()
-        self.last = None
+        self.last = 0
         
         for var in self.variables:
             for n in self.neighbors[var]:
@@ -89,12 +89,12 @@ class rlfa(csp.CSP):
             if B not in assignment:
                 for b in csp.curr_domains[B][:]:
                     if not csp.constraints(var, value, B, b, csp.neighbors, csp.cons):                 
-                        #add inconcistent neighbor in pastFC SET
-                        csp.pastFc[B].add(var)                       
+                        #add inconcistent var in neighbors PAST FC SET
+                        csp.pastFc[B].add(var) 
                         csp.prune(B, b, removals)
                 
                 if not csp.curr_domains[B]:  
-                    #update Conflict Set of current variable
+                    #update Conflict Set of current variable var
                     csp.confSet[var] = csp.confSet[var].union(csp.pastFc[B])
                   
                     csp.weight[(var, B)] += 1 #allagh
@@ -110,50 +110,96 @@ class rlfa(csp.CSP):
         return True
                 
             
+    # def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
+    #                     order_domain_values=unordered_domain_values, inference=no_inference):
+
+    #     def backtrack(assignment):
+    #         if len(assignment) == len(csp.variables):
+    #             return assignment
+            
+    #         var = select_unassigned_variable(assignment, csp)
+    #         for value in order_domain_values(var, assignment, csp):
+
+    #             csp.assign(var, value, assignment)
+    #             removals = csp.suppose(var, value)
+    #             if inference(csp, var, value, assignment, removals):                
+    #                 result = backtrack(assignment)
+                   
+    #                 if result is None:
+    #                     if var not in csp.ngSet:      
+    #                         csp.unassign(var, assignment)
+    #                         csp.restore(removals)
+    #                         print(var)
+    #                         print("RESULT = NONE VAR NOT IN NG")
+    #                         return None
+    #                     print("RESULT IS NONE BUT VAR IN NG")
+    #                     return None
+                       
+    #                 deepVar = var
+    #                 csp.confSet[var] = csp.confSet[var].union(csp.ngSet) - {deepVar}
+    #                 for var1 in csp.pastFc[deepVar]:
+    #                     csp.confSet[var1] = set()                      
+    #                 return result                         
+            
+    #             csp.confSet[var] = csp.confSet[var].union(csp.pastFc[csp.last])
+    #             # if result is not None:
+    #             #     return result
+                
+    #             csp.restore(removals)
+    #             csp.unassign(var, assignment)
+            
+    #         #domain of var wipped out --> update no-good set 
+    #         csp.ngSet = csp.confSet[var].union(csp.pastFc[var])  
+    #         print(var)
+    #         print(csp.ngSet)
+    #         # csp.unassign(var, assignment)
+    #         print("result = none out of for ")
+    #         return None
+
+    #     result = backtrack({})
+    #     assert result is None or csp.goal_test(result)
+    #     return result
+
+
     def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
                         order_domain_values=unordered_domain_values, inference=no_inference):
+        """[Figure 6.5]"""
 
         def backtrack(assignment):
             if len(assignment) == len(csp.variables):
                 return assignment
-            
             var = select_unassigned_variable(assignment, csp)
-            for value in order_domain_values(var, assignment, csp):
-
+            for value in order_domain_values(var, assignment, csp): 
                 csp.assign(var, value, assignment)
                 removals = csp.suppose(var, value)
-                if inference(csp, var, value, assignment, removals):                
+                if inference(csp, var, value, assignment, removals):
                     result = backtrack(assignment)
-                   
+                    
                     if result is None:
-                        if var not in csp.ngSet:      
+                        if var not in csp.ngSet:
                             csp.unassign(var, assignment)
                             csp.restore(removals)
                             return None
                         
+                    if result is not None:                    
+                        return result
                     deepVar = var
                     csp.confSet[var] = csp.confSet[var].union(csp.ngSet) - {deepVar}
-                    for var1 in csp.pastFc[deepVar]:
-                        csp.confSet[var1] = set() 
-                    return result                         
-                else:
-                    csp.confSet[var] = csp.confSet[var].union(csp.pastFc[csp.last])
-                    # if result is not None:
-                    #     return result
-                    
-                    csp.restore(removals)
-                    csp.unassign(var, assignment)
-                
-            #domain of var wipped out --> update no-good set 
-            csp.ngSet = csp.confSet[var].union(csp.pastFc[var])  
-            # csp.unassign(var, assignment)
+                    for v in csp.pastFc[deepVar]:
+                        csp.confSet[v] = set()
+            
+                csp.confSet[var] = csp.confSet[var].union(csp.pastFc[csp.last])
+                csp.restore(removals)
+                csp.unassign
+            
+            csp.ngSet = csp.confSet[var].union(csp.pastFc[var])
+            csp.unassign(var, assignment)
+            
             return None
 
         result = backtrack({})
         assert result is None or csp.goal_test(result)
         return result
-
-
 
 
 

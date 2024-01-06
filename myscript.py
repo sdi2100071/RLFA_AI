@@ -20,7 +20,7 @@ if __name__ == "__main__":
     
 #file import 
 
-    path = "rlfap\\dom2-f24.txt"
+    path = "rlfap\\dom8-f10.txt"
     with open(path, 'r') as dom:
         lines = dom.readlines()
     
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     
     domvars = domains
     
-    path = "rlfap\\var2-f24.txt"
+    path = "rlfap\\var8-f10.txt"
     with open(path, 'r') as var:
         lines = var.readlines()
     
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     variables  = list(map(int, variables)) 
         
-    path = "rlfap\\ctr2-f24.txt"
+    path = "rlfap\\ctr8-f10.txt"
     with open(path, 'r') as cons:
         lines = cons.readlines()
         
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     "FC"
     # fc = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
     # print(fc)
-    
+    # print(rlfap.nassigns)
     "MAC"
     # mac = csp.backtracking_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.mac)
     # print(mac)
@@ -108,6 +108,7 @@ if __name__ == "__main__":
     "FC - CBJ"
     fc_cbj = rlfa.rlfa.cbj_search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference=rlfa.rlfa.forward_checking)
     print(fc_cbj)
+    print(rlfap.nassigns)
     
     
     # print(list(set1)[-1])
