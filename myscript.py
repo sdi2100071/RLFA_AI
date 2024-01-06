@@ -20,7 +20,7 @@ if __name__ == "__main__":
     
 #file import 
 
-    path = "rlfap\\dom2-f25.txt"
+    path = "rlfap\\dom2-f24.txt"
     with open(path, 'r') as dom:
         lines = dom.readlines()
     
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     
     domvars = domains
     
-    path = "rlfap\\var2-f25.txt"
+    path = "rlfap\\var2-f24.txt"
     with open(path, 'r') as var:
         lines = var.readlines()
     
@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     variables  = list(map(int, variables)) 
         
-    path = "rlfap\\ctr2-f25.txt"
+    path = "rlfap\\ctr2-f24.txt"
     with open(path, 'r') as cons:
         lines = cons.readlines()
         
