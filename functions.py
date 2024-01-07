@@ -97,7 +97,6 @@ def handle_files():
     
     consFile.close()
     
-    
     return variables, neighbors, domains, cons
     
     

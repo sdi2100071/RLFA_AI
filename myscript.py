@@ -12,14 +12,18 @@ if __name__ == "__main__":
     
     method = {"fc_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.forward_checking],
               "mac_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.mac ], 
-              "fc_cbj" : [rlfa.rlfa.cbj_search,rlfa.rlfa.forward_checking ]}
+              "fc_cbj" : [rlfa.rlfa.cbj_search,rlfa.rlfa.forward_checking ],
+              "min_conf": [csp.min_conflicts,   "jbl"]}
     
     
     search = method[sys.argv[1]][0]
     inf = method[sys.argv[1]][1]
     
-    solution = search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference = inf)
-   
+    if sys.argv[1] == "min_conf":
+        solution = search(rlfap, 100000)
+    else:   
+        solution = search(rlfap, select_unassigned_variable=rlfa.rlfa.dom_wdeg, inference = inf)
+    
     print("SOLUTION FOR " , sys.argv[1] ,"=" )
     print(solution)
    
