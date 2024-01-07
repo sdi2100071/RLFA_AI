@@ -2,6 +2,7 @@ import csp
 import rlfa
 import functions
 import sys
+import time
 
 if __name__ == "__main__":
         
@@ -10,8 +11,8 @@ if __name__ == "__main__":
     #create rlfa prob    
     rlfap = rlfa.rlfa(variables, domains, neighbors,functions.constraints, cons)
     
-    method = {"fc_bt" : [csp.backtracking_search, rlfa.rlfa.forward_checking],
-              "mac_bt" : [csp.backtracking_search, rlfa.rlfa.mac ], 
+    method = {"fc_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.forward_checking],
+              "mac_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.mac ], 
               "fc_cbj" : [rlfa.rlfa.cbj_search,rlfa.rlfa.forward_checking ]}
     
     search = method[sys.argv[1]][0]
@@ -35,5 +36,8 @@ if __name__ == "__main__":
     print("-------------------------------------")
    
     print("NUMBER OF ASSIGHNS:")
-    print(rlfap.nassigns)
+    print(rlfap.nassigns ,"\n")
+    
+    print("TIME ELLAPSED:")
+    print(rlfap.end_time - rlfap.start_time , "sec")
     
