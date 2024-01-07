@@ -1,4 +1,5 @@
 import operator
+from csp import CSP
 import sys
 
 def constraints(A, a, B, b, neighbors, cons):

@@ -197,6 +197,7 @@ def revise(csp, Xi, Xj, removals, checks=0):
         # if all(not csp.constraints(Xi, x, Xj, y) for y in csp.curr_domains[Xj]):
         conflict = True
         for y in csp.curr_domains[Xj]:
+            csp.checks += 1
             if csp.constraints(Xi, x, Xj, y, csp.neighbors, csp.cons):
                 conflict = False
             checks += 1
