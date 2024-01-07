@@ -114,7 +114,7 @@ class rlfa(csp.CSP):
                         order_domain_values=unordered_domain_values, inference=no_inference):
 
         def backtrack(assignment):
-            print(csp.nassigns)
+            # print(csp.nassigns)
             if len(assignment) == len(csp.variables):
                 return assignment
             var = select_unassigned_variable(assignment, csp)
