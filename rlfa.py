@@ -12,7 +12,9 @@ class rlfa(csp.CSP):
         self.domains = domains
         self.neighbors = neighbors
         self.constraints = constraints
-        self.cons = cons
+        self.cons = cons #dict { var: [conditions] ex. [['>','2],[etc]] }
+                         #                             neighbor1 , neighbor2 ...
+       
         self.weight = {}   
         self.confSet = {key: set() for key in self.variables}
         self.pastFc = {key: set() for key in self.variables}
@@ -34,6 +36,7 @@ class rlfa(csp.CSP):
         return (csp.curr_domains or csp.domains)[var]
     
     
+    #heuristic domain weighted degree
     def dom_wdeg(assignment, csp):
         
         min = sys.maxsize
@@ -41,7 +44,10 @@ class rlfa(csp.CSP):
         
         for var in csp.variables:
             
+            #sum of weights
             wdeg = 0          
+            
+            #for each unassighned var, sum the weights of each constraint including her and another unassighned neighbor
             if var not in assignment:
                 for n in csp.neighbors[var]:
                     if n not in assignment:
@@ -49,9 +55,12 @@ class rlfa(csp.CSP):
             
                 if wdeg == 0 :
                     wdeg = 1
-
+            
+                # evaluation value = size of current domain / weight degree
                 domSize = len(rlfa.choices(csp, var))  
                 eval = domSize/wdeg
+                
+                #find var with min evaluation value
                 if eval < min:
                     min = eval
                     minv = var
@@ -69,17 +78,21 @@ class rlfa(csp.CSP):
             (Xi, Xj) = queue.pop()
             revised, checks = revise(csp, Xi, Xj, removals, checks)
             if revised:
+                
                 if not csp.curr_domains[Xi]:
-                    csp.weight[(Xi, Xj)] += 1 #allagh
-                    csp.weight[(Xj, Xi)] += 1 #allagh
+                    #weight : dict{(x,y): counter } (x,y):constraint (two way assosiation)
+                    csp.weight[(Xi, Xj)] += 1
+                    csp.weight[(Xj, Xi)] += 1
                     return False # CSP is inconsistent
+                
                 for Xk in csp.neighbors[Xi]:
                     if Xk != Xj:
                         queue.add((Xk, Xi))
         return True  # CSP is satisfiable
        
     
-    def mac(csp, var, value, assignment, removals, constraint_propagation=AC3):
+
+    def mac(csp, var, value, assignment, removals, constraint_propagation=AC3): #<-- AC3 instead of AC3b
         """Maintain arc consistency."""
         return constraint_propagation(csp, {(X, var) for X in csp.neighbors[var]}, removals)
       
@@ -91,13 +104,16 @@ class rlfa(csp.CSP):
             # If Xi=x conflicts with Xj=y for every possible y, eliminate Xi=x
             # if all(not csp.constraints(Xi, x, Xj, y) for y in csp.curr_domains[Xj]):
             conflict = True
-            for y in csp.curr_domains[Xj]:
-                csp.checks += 1
+            for y in csp.curr_domains[Xj]:    
+                #counter of constraint checks
+                csp.checks += 1       #<--- the only change
+                
                 if csp.constraints(Xi, x, Xj, y, csp.neighbors, csp.cons):
                     conflict = False
                 checks += 1
                 if not conflict:
                     break
+           
             if conflict:
                 csp.prune(Xi, x, removals)
                 revised = True
@@ -112,30 +128,33 @@ class rlfa(csp.CSP):
                 for b in csp.curr_domains[B][:]:
                     csp.checks += 1
                     if not csp.constraints(var, value, B, b, csp.neighbors, csp.cons):                 
-                        #add inconcistent var in neighbors PAST FC SET
+                        # add inconcistent var in neighbor's past_fc set(set of vars that prunned one or more values from var)
                         csp.pastFc[B].add(var) 
+                        
                         csp.prune(B, b, removals)
                 
                 if not csp.curr_domains[B]:  
-                    #update Conflict Set of current variable var
+                    # update Conflict Set of current variable var maintaining the vars affected(prunnded values) by B
                     csp.confSet[var] = csp.confSet[var].union(csp.pastFc[B])
-                  
-                    csp.weight[(var, B)] += 1 #allagh
-                    csp.weight[(B, var)] += 1 #allagh
+
+                    # weight : dict{(x,y): counter } (x,y):constraint (two way assosiation)
+                    csp.weight[(var, B)] += 1
+                    csp.weight[(B, var)] += 1 
                     
                     return False
                 
         return True
                 
-
+    # source paper: 
     def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
                         order_domain_values=unordered_domain_values, inference=no_inference):
 
         csp.start_time = time.perf_counter()
         def backtrack(assignment):
-            # print(csp.nassigns)
+
             if len(assignment) == len(csp.variables):
                 return assignment
+           
             var = select_unassigned_variable(assignment, csp)
             for value in order_domain_values(var, assignment, csp): 
                 csp.assign(var, value, assignment)
@@ -144,23 +163,30 @@ class rlfa(csp.CSP):
                 if inference(csp, var, value, assignment, removals):
                     result = backtrack(assignment)
                     
+                    # found result
                     if result is not None:                    
                         return result
                     
+                    # if var not in no - good set --> havent found the deepest var of the no good set --> backtrack more
                     if var not in csp.ngSet:
                         csp.unassign(var, assignment)
                         csp.restore(removals)
                         return None
-                                            
+                   
+                    # if in no good set --> found the deepest(that we must backtrack) var in no good set                      
                     deepVar = var
+                    
+                    # update confSet of deep var by adding the vars in ng set (vars that caused dom wipe out in curr var) in it
                     csp.confSet[deepVar] = csp.confSet[deepVar].union(csp.ngSet) - {deepVar}
+                    
+                    #restore conflict sets of vars in past_fc of the deepVar to remove association with vars that it affected 
                     for v in csp.pastFc[deepVar]: 
                         csp.confSet[v] = set()
-            
 
                 csp.restore(removals)
                 csp.unassign(var, assignment)
-            
+                
+            #domain of var wiped out --> update ng set by merging (confset,pastFc) <-- the reason of dom wipe out is in there
             csp.ngSet = csp.confSet[var].union(csp.pastFc[var])
             return None
 
@@ -172,9 +198,8 @@ class rlfa(csp.CSP):
     
     def backtracking_search(csp, select_unassigned_variable=first_unassigned_variable,
                         order_domain_values=unordered_domain_values, inference=no_inference):
-        """[Figure 6.5]"""
         
-        csp.start_time = time.perf_counter()
+        csp.start_time = time.perf_counter()    #<---- the only change
 
         def backtrack(assignment):
             if len(assignment) == len(csp.variables):
@@ -193,7 +218,7 @@ class rlfa(csp.CSP):
             return None
 
         result = backtrack({})
-        csp.end_time = time.perf_counter()
+        csp.end_time = time.perf_counter()  #<---- the only change
         assert result is None or csp.goal_test(result)
         return result
 
