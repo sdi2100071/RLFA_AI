@@ -25,6 +25,7 @@ def handle_files():
         for j in range(1, len(doms[i].split(" "))):
             vars.append(doms[i].split(" ")[j])
         domains[key] = vars
+    
     #str --> int
     domains = {int(key):[int(i) for i in val]
        for key, val in domains.items()}  
@@ -55,6 +56,7 @@ def handle_files():
     variables  = list(map(int, variables)) 
     varFile.close()
 
+
     path = "../rlfap/ctr" + prefix + ".txt"
     with open(path, 'r') as consFile:
         lines = consFile.readlines()
@@ -65,6 +67,7 @@ def handle_files():
         temp.append(asList[0])
         
     neighbors = {key: [] for key in variables} 
+    
     #cons: dictionary { var: [conditions] ex. [['>','2],[etc]] }
     cons = {key: [] for key in variables}   
     for i in range(1, len(temp)):
