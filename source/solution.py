@@ -1,18 +1,18 @@
 import csp
 import rlfa
-import functions
+import fileHandle
 import sys
 
 if __name__ == "__main__":
         
-    variables, neighbors, domains,cons = functions.handle_files()
+    variables, neighbors, domains,cons = fileHandle.handle_files()
 
     #create rlfa prob    
-    rlfap = rlfa.rlfa(variables, domains, neighbors,functions.constraints, cons)
+    rlfap = rlfa.rlfa(variables, domains, neighbors,rlfa.rlfa.constraints, cons)
     
     method = {"fc_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.forward_checking],
-              "mac_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.mac ], 
-              "fc_cbj" : [rlfa.rlfa.cbj_search,rlfa.rlfa.forward_checking ],
+              "mac_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.mac], 
+              "fc_cbj" : [rlfa.rlfa.cbj_search,rlfa.rlfa.forward_checking],
               "min_conf": [csp.min_conflicts, None]}
     
     
@@ -30,10 +30,10 @@ if __name__ == "__main__":
    
     print("-------------------------------------")
    
-    print("NUMBER OF ASSIGHNS:")
+    print("NUMBER OF ASSIGNS:")
     print(rlfap.nassigns ,"\n")
     
-    print("TIME ELLAPSED:")
+    print("EXCECUTION TIME:")
     print(rlfap.end_time - rlfap.start_time , "sec\n")
     
     print("NUMBER OF CONSTRAINT CHECKS:")

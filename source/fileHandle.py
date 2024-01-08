@@ -1,32 +1,10 @@
-import operator
-from csp import CSP
 import sys
-
-def constraints(A, a, B, b, neighbors, cons):
-
-        #ops: dict{ str operator : operator }
-        ops = { "=": operator.eq, ">": operator.gt } 
-        
-        #find position/index of B in list of A's neighbors
-        ind = neighbors[A].index(B)
-        
-        #convert str operation/condition --> arithmetical
-        cond = cons[A][ind]   
-         
-        sub = abs(a - b)
-        cond_res = int(cond[1])     #constraint result
-
-        str_op = cond[0]
-        if ops[str_op](sub, cond_res):
-            return True
-        else:
-            return False 
         
 def handle_files():
     
     prefix = sys.argv[2]
      
-    path = "rlfap/dom" + prefix + ".txt"
+    path = "../rlfap/dom" + prefix + ".txt"
     with open(path, 'r') as domFile:
         lines = domFile.readlines()
     
@@ -56,7 +34,7 @@ def handle_files():
     domFile.close()
     
     
-    path = "rlfap/var" + prefix + ".txt"
+    path = "../rlfap/var" + prefix + ".txt"
     with open(path, 'r') as varFile:
         lines = varFile.readlines()
     
@@ -77,7 +55,7 @@ def handle_files():
     variables  = list(map(int, variables)) 
     varFile.close()
 
-    path = "rlfap/ctr" + prefix + ".txt"
+    path = "../rlfap/ctr" + prefix + ".txt"
     with open(path, 'r') as consFile:
         lines = consFile.readlines()
         

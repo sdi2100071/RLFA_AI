@@ -1,6 +1,8 @@
 import csp
 import sys
 import time
+import operator
+
 
 from csp import *
 
@@ -31,6 +33,28 @@ class rlfa(csp.CSP):
         csp.CSP.__init__(self, variables, domains, neighbors, constraints)
     
    
+   
+    def constraints(A, a, B, b, neighbors, cons):
+
+        #ops: dict{ str operator : operator }
+        operators = { "=": operator.eq, ">": operator.gt } 
+        
+        #find position/index of B in list of A's neighbors
+        ind = neighbors[A].index(B)
+        
+        #convert str operation/condition --> arithmetical
+        cond = cons[A][ind]   
+        
+        sub = abs(a - b)
+        cond_res = int(cond[1])     #constraint result
+
+        str_op = cond[0]
+        if operators[str_op](sub, cond_res):
+            return True
+        
+        return False 
+        
+    
     def choices(csp, var):
         """Return all values for var that aren't currently ruled out."""
         return (csp.curr_domains or csp.domains)[var]
@@ -47,7 +71,7 @@ class rlfa(csp.CSP):
             #sum of weights
             wdeg = 0          
             
-            #for each unassighned var, sum the weights of each constraint including her and another unassighned neighbor
+            #for each unassigned var, sum the weights of each constraint including her and another unassigned neighbor
             if var not in assignment:
                 for n in csp.neighbors[var]:
                     if n not in assignment:
