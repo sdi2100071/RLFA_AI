@@ -3,6 +3,7 @@ import rlfa
 import fileHandle
 import sys
 
+
 if __name__ == "__main__":
         
     variables, neighbors, domains,cons = fileHandle.handle_files()
@@ -10,6 +11,13 @@ if __name__ == "__main__":
     #create rlfa prob    
     rlfap = rlfa.rlfa(variables, domains, neighbors,rlfa.rlfa.constraints, cons)
     
+    
+    # RUN: >> python solution.py (algorithm) (instance) 
+   
+    # fc_cbj: e.g       >>  python solution.py fc_cbj 2-f24
+    # fc_bt: e.g        >> e.g python solution.py fc_bt ...
+    # min conflicts:    >> python solution.py min_conf ...
+
     method = {"fc_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.forward_checking],
               "mac_bt" : [rlfa.rlfa.backtracking_search, rlfa.rlfa.mac], 
               "fc_cbj" : [rlfa.rlfa.cbj_search,rlfa.rlfa.forward_checking],

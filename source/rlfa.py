@@ -169,7 +169,7 @@ class rlfa(csp.CSP):
                 
         return True
                 
-    # source paper: 
+    # source paper: https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1163&context=csetechreports
     def cbj_search(csp, select_unassigned_variable=first_unassigned_variable,
                         order_domain_values=unordered_domain_values, inference=no_inference):
 
