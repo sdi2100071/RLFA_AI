@@ -32,7 +32,6 @@ This project implements a **Constraint Satisfaction Problem (CSP)** solver for t
 1. Clone the repository:
    ```bash
    git clone https://github.com/yourusername/rlfa-csp-solver.git
-   cd rlfa-csp-solver
 
 ## Usage
 
